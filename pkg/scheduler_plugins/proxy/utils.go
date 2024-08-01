@@ -18,11 +18,16 @@ package proxy
 
 import (
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/klog/v2"
 
 	"admiralty.io/multicluster-scheduler/pkg/apis/multicluster/v1alpha1"
 )
 
 func isCandidatePodUnschedulable(c *v1alpha1.PodChaperon) bool {
+	if len(c.Status.Conditions) == 0 {
+		klog.V(3).Infof("got empty conditions for delegate pod %s", c.Name)
+		return true
+	}
 	for _, cond := range c.Status.Conditions {
 		if cond.Type == v1.PodScheduled && cond.Status == v1.ConditionFalse && (cond.Reason == v1.PodReasonUnschedulable || cond.Reason == v1.PodReasonSchedulingGated) {
 			return true

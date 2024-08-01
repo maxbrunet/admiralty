@@ -32,6 +32,11 @@ func TestIsPodUnschedulable(t *testing.T) {
 		want            bool
 	}{
 		{
+			name:            "no conditions",
+			conditionStatus: []v1.PodCondition{},
+			want:            true,
+		},
+		{
 			name:            "reason pod unschedulable",
 			conditionStatus: []v1.PodCondition{{Status: v1.ConditionFalse, Type: v1.PodScheduled, Reason: v1.PodReasonUnschedulable}},
 			want:            true,
